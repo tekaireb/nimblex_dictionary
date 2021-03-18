@@ -1,0 +1,4 @@
+{
+  "worda": "first definition.",
+  "wordb": "second definition.",
+}
