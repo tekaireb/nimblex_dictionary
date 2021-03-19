@@ -10,7 +10,7 @@ void test_trie();
 
 void test_insert();
 void test_search();
-void test_children_search();
+void test_prefix_search();
 void test_fuzzy_search();
 
 #endif  // TEST_TRIE_H

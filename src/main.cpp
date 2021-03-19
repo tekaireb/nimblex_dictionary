@@ -12,7 +12,7 @@ int main() {
 
     cout << "Words loaded" << endl;
 
-    // vector<string> v = d.t.children_search("min");
+    // vector<string> v = d.t.prefix_search("min");
     // for (string s : v)
     //     cout << s << endl;
 

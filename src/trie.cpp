@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// Trie constructor
 Trie::Trie() {
     root = new Node;
     num_words = 0;
@@ -50,30 +51,47 @@ Node* Trie::search(string word) {
  * 
  * @return list of words which begin with the prefix
  */
-vector<string> Trie::children_search(string word) {
+vector<string> Trie::prefix_search(string word) {
     vector<string> result;
     Node* current = search(word);
-    if (current) children_search(current, word, result, "");
+    if (current) prefix_search(current, word, result, "");
     return result;
 }
 
-void Trie::children_search(Node* current, string prefix, vector<string>& v, string suffix) {
+/**
+ * Recursive helper function to search for words by prefix
+ * 
+ * @param current  pointer to current node in traversal
+ * @param prefix   substring with which each word begins
+ * @param v        vector which is populated with matching words
+ * @param suffix   all characters in word after prefix
+ */
+void Trie::prefix_search(Node* current, string& prefix, vector<string>& v, string suffix) {
     if (current->end_of_word && suffix.size())
         v.push_back(prefix + suffix);
     for (Node* n : current->children) {
         string temp = suffix;
         if (n) {
             temp += n->letter;
-            children_search(n, prefix, v, temp);
+            prefix_search(n, prefix, v, temp);
         }
     }
 }
 
+/**
+ * Searches for words similar to target word within maximum Levenshtein distance
+ * 
+ * @param word     target word used for comparison
+ * @param max_dif  maximum Levenshtein distance allowed
+ * 
+ * @return vector holding all words with Levenshtein distance of 'max_dif' or less from 'word'
+ */
 vector<string> Trie::fuzzy_search(string word, int max_dif) {
     vector<string> results;
     vector<int> current_row(word.size() + 1);
     iota(begin(current_row), end(current_row), 0);  // Populate with 0, 1, ..., LEN_WORD
 
+    // Search all nodes recursively
     for (Node* n : root->children)
         if (n)
             fuzzy_search_recursive(n, word, current_row, max_dif, results);
@@ -81,11 +99,39 @@ vector<string> Trie::fuzzy_search(string word, int max_dif) {
     return results;
 }
 
+/**
+ * Recursive helper function to search for words by Levenshtein distance from target
+ * 
+ * @param n             pointer to current node in traversal
+ * @param word          target word for comparison
+ * @param previous_row  previous row in NxM Levenshtein matrix
+ * @param max_dif       maximum distance allowed from target word
+ * @param results       vector to be populated with matching words
+ * 
+ * The matrix is generated incrementally, and multiple children make use of parents'
+ * partial computation in order to improve performance.
+ * 
+ * Example matrix (Flaw vs. Lawn):
+ * 
+ *         F   L   A   W
+ *   +---+---+---+---+---+
+ *   | 0 | 1 | 2 | 3 | 4 |
+ * L | 1 | 1 | 1 | 2 | 3 |
+ * A | 2 | 2 | 2 | 1 | 2 |
+ * W | 3 | 3 | 3 | 2 | 1 |
+ * N | 4 | 4 | 4 | 3 | 2 |  <-- Distance = 2
+ *   +---+---+---+---+---+
+ * 
+ * Suppose the letter 'n' in 'lawn' has a child 's'. All of the previous computation
+ * is valid for the word 'lawns', and the last row ('previous_row') contains all
+ * necessary information.
+ */
 void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_row, int max_dif, vector<string>& results) {
     int columns = word.size();
-    vector<int> current_row;
+    vector<int> current_row;  // Add one new row per letter
     current_row.push_back(previous_row[0] + 1);
 
+    // Construct row, where each column in based on distance from a letter in 'word'
     for (int column = 0; column < columns; column++) {
         int insert_dif = current_row[column] + 1;
         int delete_dif = previous_row[column + 1] + 1;
@@ -96,10 +142,12 @@ void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_ro
         current_row.push_back(min3(insert_dif, delete_dif, replace_dif));
     }
 
+    // Add word to results if last entry (distance) is within bounds and this node holds a word
     if (current_row.back() <= max_dif && n->end_of_word)
         results.push_back(n->word);
 
-    if (*min_element(begin(current_row), end(current_row)) < max_dif)
+    // Search children if any entries are within bounds
+    if (*min_element(begin(current_row), end(current_row)) <= max_dif)
         for (Node* m : n->children)
             if (m)
                 fuzzy_search_recursive(m, word, current_row, max_dif, results);

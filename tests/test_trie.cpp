@@ -7,7 +7,7 @@ void test_trie() {
 
     test_insert();
     test_search();
-    test_children_search();
+    test_prefix_search();
     test_fuzzy_search();
 }
 
@@ -43,8 +43,8 @@ void test_search() {
     test(t.search("e"), (Node *)nullptr, "Test search function 5", 4);
 }
 
-void test_children_search() {
-    cout << "  Testing Trie::children_search()" << endl;
+void test_prefix_search() {
+    cout << "  Testing Trie::prefix_search()" << endl;
 
     Trie t;
 
@@ -54,7 +54,7 @@ void test_children_search() {
     t.insert("application", "");
     t.insert("potato", "");
 
-    vector<string> v = t.children_search("app");
+    vector<string> v = t.prefix_search("app");
     test((int)v.size(), 2, "Test children search function 1", 4);
     test(v[0], (string) "apple", "Test children search function 1", 4);
     test(v[1], (string) "application", "Test children search function 1", 4);
@@ -62,4 +62,19 @@ void test_children_search() {
 
 void test_fuzzy_search() {
     cout << "  Testing Trie::fuzzy_search()" << endl;
+
+    Trie t;
+
+    t.insert("example", "");
+    t.insert("examplea", "");  // Distance = 1
+    t.insert("efample", "");   // Distance = 1
+    t.insert("eeample", "");   // Distance = 1
+    t.insert("eeemple", "");   // Distance = 2
+    t.insert("ffample", "");   // Distance = 2
+    t.insert("fffmple", "");   // Distance = 3
+
+    test((int)t.fuzzy_search("example", 0).size(), 1, "Test fuzzy search function 1", 4);
+    test((int)t.fuzzy_search("example", 1).size(), 4, "Test fuzzy search function 2", 4);
+    test((int)t.fuzzy_search("example", 2).size(), 6, "Test fuzzy search function 3", 4);
+    test((int)t.fuzzy_search("example", 3).size(), 7, "Test fuzzy search function 4", 4);
 }
