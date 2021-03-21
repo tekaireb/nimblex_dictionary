@@ -3,16 +3,17 @@
 
 #include <ncurses.h>
 
+#include "ui.h"
+
 class Window {
-   protected:
+   public:
     WINDOW* w;
 
-   public:
-    Window();
-    ~Window();
+    Window() {}
+    virtual ~Window() {}
 
     virtual void render() = 0;
-    virtual void handle_keypress(char key) = 0;
+    virtual void handle_keypress(int key) = 0;
 };
 
 #endif  // WINDOW_H

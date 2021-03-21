@@ -39,7 +39,7 @@ Node* Trie::search(string word) {
     Node* current = root;
     for (char c : word) {
         current = current->child(c) ? current->child(c) : nullptr;
-        if (!current) break;
+        if (!current) break;  // Word does not exist
     }
     return current;
 }
@@ -54,7 +54,7 @@ Node* Trie::search(string word) {
 vector<string> Trie::prefix_search(string word) {
     vector<string> result;
     Node* current = search(word);
-    if (current) prefix_search(current, word, result, "");
+    if (current) prefix_search_recursive(current, word, result, "");
     return result;
 }
 
@@ -66,14 +66,14 @@ vector<string> Trie::prefix_search(string word) {
  * @param v        vector which is populated with matching words
  * @param suffix   all characters in word after prefix
  */
-void Trie::prefix_search(Node* current, string& prefix, vector<string>& v, string suffix) {
+void Trie::prefix_search_recursive(Node* current, string& prefix, vector<string>& v, string suffix) {
     if (current->end_of_word && suffix.size())
         v.push_back(prefix + suffix);
     for (Node* n : current->children) {
         string temp = suffix;
         if (n) {
             temp += n->letter;
-            prefix_search(n, prefix, v, temp);
+            prefix_search_recursive(n, prefix, v, temp);
         }
     }
 }
@@ -86,8 +86,8 @@ void Trie::prefix_search(Node* current, string& prefix, vector<string>& v, strin
  * 
  * @return vector holding all words with Levenshtein distance of 'max_dif' or less from 'word'
  */
-vector<string> Trie::fuzzy_search(string word, int max_dif) {
-    vector<string> results;
+priority_queue<isp> Trie::fuzzy_search(string word, int max_dif) {
+    priority_queue<isp> results;
     vector<int> current_row(word.size() + 1);
     iota(begin(current_row), end(current_row), 0);  // Populate with 0, 1, ..., LEN_WORD
 
@@ -126,7 +126,7 @@ vector<string> Trie::fuzzy_search(string word, int max_dif) {
  * is valid for the word 'lawns', and the last row ('previous_row') contains all
  * necessary information.
  */
-void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_row, int max_dif, vector<string>& results) {
+void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_row, int max_dif, priority_queue<isp>& results) {
     int columns = word.size();
     vector<int> current_row;  // Add one new row per letter
     current_row.push_back(previous_row[0] + 1);
@@ -144,7 +144,7 @@ void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_ro
 
     // Add word to results if last entry (distance) is within bounds and this node holds a word
     if (current_row.back() <= max_dif && n->end_of_word)
-        results.push_back(n->word);
+        results.push(make_pair(current_row.back(), n->word));
 
     // Search children if any entries are within bounds
     if (*min_element(begin(current_row), end(current_row)) <= max_dif)

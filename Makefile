@@ -1,6 +1,7 @@
 # Makefile
 
-FLAGS = -std=c++14
+FLAGS = -std=c++17 -lncurses
+CXX = g++
 
 # (For main)
 # Get all .cpp files in /src directory and make object files
@@ -21,12 +22,12 @@ run: main
 
 # Build main executable
 main: $(OBJ)
-	g++ $(FLAGS) $^ -o $@
+	$(CXX) $(FLAGS) $^ -o $@
 	mv main ./build/main
 
 # Build and run unit tests
 test: $(TST_OBJ)
-	g++ $(FLAGS) $^ -o $@
+	$(CXX) $(FLAGS) $^ -o $@
 	mv test ./build/test
 	./build/test
 
@@ -38,5 +39,5 @@ clean:
 
 # Generic object file rule
 %.o: %.cpp
-	g++ -c $< -o $@
+	$(CXX) $(FLAGS) -c $< -o $@
 

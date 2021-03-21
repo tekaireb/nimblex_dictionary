@@ -1,20 +1,27 @@
 #ifndef SUGGESTIONS_H
 #define SUGGESTIONS_H
 
+#include <ncurses.h>
+
+#include <string>
+#include <vector>
+
 #include "window.h"
 
-class Suggestions : protected Window {
-    int height = 0;
-    int width = 0;
-    int start_x = 0;
-    int start_y = 0;
+class Suggestions : public Window {
+    int height,
+        width,
+        start_x,
+        start_y,
+        choice;
+    std::vector<std::string> choices;
 
    public:
     Suggestions();
     ~Suggestions();
 
     void render();
-    void handle_keypress(char key);
+    void handle_keypress(int key);
 };
 
 #endif  // SUGGESTIONS_H

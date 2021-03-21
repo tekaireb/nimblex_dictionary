@@ -3,8 +3,6 @@
 using namespace std;
 
 int main() {
-    Dictionary d;
-
     cout << "Loading words from file..." << endl;
 
     // d.load_from_file("datasets/dataset.txt");
@@ -16,13 +14,27 @@ int main() {
     // for (string s : v)
     //     cout << s << endl;
 
-    Node* word = d.t.search("hermit");
-    if (word)
-        cout << "Defition of 'hermit': " << d.t.search("hermit")->definition << endl;
-    else
-        cout << "Definition not found" << endl;
+    // Node* word = d.t.search("hermit");
+    // if (word)
+    //     cout << "Defition of 'hermit': " << d.t.search("hermit")->definition << endl;
+    // else
+    //     cout << "Definition not found" << endl;
 
-    vector<string> fuzzy = d.t.fuzzy_search("minimum", 3);
-    for (string s : fuzzy)
-        cout << s << endl;
+    // priority_queue<isp> fuzzy = d.t.fuzzy_search("minimum", 3);
+
+    // ncurses initialization
+    initscr();
+    clear();
+    noecho();
+    // cbreak();
+
+    int key;
+    vector<Window*> windows = {new Suggestions, new Searchbar, new Definition};
+
+    for (Window* w : windows) w->render();  // Initial render
+
+    while (1) {
+        key = wgetch(windows[0]->w);                        // Get user input
+        for (Window* w : windows) w->handle_keypress(key);  // Handle input
+    }
 }

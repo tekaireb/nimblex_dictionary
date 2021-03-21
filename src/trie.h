@@ -4,20 +4,21 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <queue>
 #include <string>
 #include <vector>
 
 // Calculate minimum of two values
-#define min(a, b) \
-    ({ typeof (a) _a = (a); \
-       typeof (b) _b = (b); \
-     _a < _b ? _a : _b; })
+#define min(a, b) (a < b ? a : b)
 
 // Calculate minimum of three values
 #define min3(a, b, c) min(a, min(b, c))
 
 // Helper used to access Node's children
 #define child(c) children[c - ' ']
+
+// Define int-string pair
+typedef std::pair<int, std::string> isp;
 
 // Nodes within the Trie
 struct Node {
@@ -42,11 +43,11 @@ class Trie {
     void insert(std::string word, std::string def);
     Node* search(std::string word);
     std::vector<std::string> prefix_search(std::string word);
-    std::vector<std::string> fuzzy_search(std::string word, int max_dif);
+    std::priority_queue<isp> fuzzy_search(std::string word, int max_dif);
 
    private:
-    void prefix_search(Node* current, std::string& prefix, std::vector<std::string>& v, std::string suffix = "");
-    void fuzzy_search_recursive(Node* n, std::string word, std::vector<int>& previous_row, int max_dif, std::vector<std::string>& results);
+    void prefix_search_recursive(Node* current, std::string& prefix, std::vector<std::string>& v, std::string suffix = "");
+    void fuzzy_search_recursive(Node* n, std::string word, std::vector<int>& previous_row, int max_dif, std::priority_queue<isp>& results);
 };
 
 #endif  // TRIE_H
