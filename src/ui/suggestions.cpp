@@ -5,7 +5,6 @@
 using namespace std;
 
 Suggestions::Suggestions() {
-    choices = {"Test1", "Test2", "Test3", "Test4", "Test5"};
     height = 27, width = 30, start_x = 0, start_y = 3, choice = -1;
 
     w = newwin(height, width, start_y, start_x);
@@ -26,8 +25,6 @@ void Suggestions::render() {
     werase(w);
     box(w, 0, 0);
 
-    choices.clear();  // Reset choices vector
-
     // Show hint if there is no word
     if (!search_term.size()) {
         mvwprintw(w, y, x, "Suggestions...");
@@ -35,25 +32,28 @@ void Suggestions::render() {
         return;
     }
 
-    choices = d.t.prefix_search(search_term);
-    if (choices.size() > 20)
-        choices.resize(25);
+    // Only compute suggestions when there is a new search term
+    if (previous_search_term != search_term) {
+        choices = d.t.prefix_search(search_term);
+        if (choices.size() > 20)
+            choices.resize(25);
 
-    // Use fuzzy search if there are no matching words
-    if (!choices.size()) {
-        pq = d.t.fuzzy_search(search_term, 4);
+        // Use fuzzy search if there are no matching words
+        if (!choices.size()) {
+            pq = d.t.fuzzy_search(search_term, 3);
 
-        // Add words in priority queue to choices vector
-        while (!pq.empty() && choices.size() < 23) {
-            choices.push_back(pq.top().second);  // Add word to choices
-            pq.pop();                            // Remove word from priority queue
+            // Add words in priority queue to choices vector
+            while (!pq.empty() && choices.size() < 23) {
+                choices.push_back(pq.top().second);  // Add word to choices
+                pq.pop();                            // Remove word from priority queue
+            }
         }
+    }
 
-        // Add 'DID YOU MEAN?' text if word does not exist
-        if (!d.t.search(search_term)) {
-            mvwprintw(w, y, x, "DID YOU MEAN?");
-            y += 2;
-        }
+    // Add 'DID YOU MEAN?' text if word does not exist
+    if (!d.t.search(search_term)) {
+        mvwprintw(w, y, x, "DID YOU MEAN?");
+        y += 2;
     }
 
     for (int i = 0; i < choices.size(); i++) {
@@ -66,6 +66,7 @@ void Suggestions::render() {
         y++;
     }
 
+    previous_search_term = search_term;
     wrefresh(w);
 }
 

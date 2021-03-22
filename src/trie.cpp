@@ -142,8 +142,8 @@ void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_ro
         current_row.push_back(min3(insert_dif, delete_dif, replace_dif));
     }
 
-    // Add word to results if last entry (distance) is within bounds and this node holds a word
-    if (current_row.back() <= max_dif && n->end_of_word)
+    // Add word to results if reached end of word, last entry (distance) is within bounds (and ignore word itself)
+    if (n->end_of_word && current_row.back() <= max_dif && current_row.back() != 0)
         results.push(make_pair(current_row.back(), n->word));
 
     // Search children if any entries are within bounds

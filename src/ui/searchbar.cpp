@@ -33,6 +33,12 @@ void Searchbar::render() {
 void Searchbar::handle_keypress(int key) {
     if (isalpha(key) || key == '-' || key == ' ')
         search_term += (char)key;
-    if (key == 127)  // DELETE
+    if (key == 127)  // DELETE (remove last character)
         search_term.pop_back();
+    if (key == 27)  // ESC (delete word)
+        search_term = "";
+    if (key == 9) {  // TAB (select top suggestion)
+        if (choices.size() != 0)
+            search_term = choices[0];
+    }
 }

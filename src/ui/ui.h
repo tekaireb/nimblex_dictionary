@@ -8,6 +8,8 @@
 
 extern Dictionary d;
 extern std::string search_term;
+extern std::string previous_search_term;
+extern std::vector<std::string> choices;
 extern std::priority_queue<isp, std::vector<isp>, std::greater<isp>> pq;
 
 #endif  // UI_H
