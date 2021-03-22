@@ -15,6 +15,7 @@ class Suggestions : public Window {
         start_y,
         choice;
     std::vector<std::string> choices;
+    std::priority_queue<isp, std::vector<isp>, std::greater<isp>> pq;
 
    public:
     Suggestions();

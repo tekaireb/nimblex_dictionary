@@ -22,7 +22,10 @@ void Searchbar::render() {
     box(w, 0, 0);
 
     // Render text
-    mvwprintw(w, 1, 2, "%s", search_term.c_str());
+    if (search_term.size())
+        mvwprintw(w, 1, 2, "%s", search_term.c_str());
+    else
+        mvwprintw(w, 1, 2, "Start typing...");  // Show hint if there is no word
 
     wrefresh(w);
 }
@@ -32,6 +35,4 @@ void Searchbar::handle_keypress(int key) {
         search_term += (char)key;
     if (key == 127)  // DELETE
         search_term.pop_back();
-
-    render();
 }

@@ -5,6 +5,8 @@
         "iosfwd": "cpp",
         "map": "cpp",
         "vector": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp"
     }
 }

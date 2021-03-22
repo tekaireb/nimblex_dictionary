@@ -43,11 +43,11 @@ class Trie {
     void insert(std::string word, std::string def);
     Node* search(std::string word);
     std::vector<std::string> prefix_search(std::string word);
-    std::priority_queue<isp> fuzzy_search(std::string word, int max_dif);
+    std::priority_queue<isp, std::vector<isp>, std::greater<isp>> fuzzy_search(std::string word, int max_dif);
 
    private:
     void prefix_search_recursive(Node* current, std::string& prefix, std::vector<std::string>& v, std::string suffix = "");
-    void fuzzy_search_recursive(Node* n, std::string word, std::vector<int>& previous_row, int max_dif, std::priority_queue<isp>& results);
+    void fuzzy_search_recursive(Node* n, std::string word, std::vector<int>& previous_row, int max_dif, std::priority_queue<isp, std::vector<isp>, std::greater<isp>>& results);
 };
 
 #endif  // TRIE_H

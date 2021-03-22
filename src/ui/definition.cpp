@@ -25,6 +25,13 @@ void Definition::render() {
     box(w, 0, 0);
     werase(w_padding);
 
+    // Show hint if there is no word
+    if (!search_term.size()) {
+        mvwprintw(w_padding, 0, 0, "Definition will appear here...");
+        wrefresh(w_padding);
+        return;
+    }
+
     // Render text
     Node* n = d.t.search(search_term);
     if (n)
@@ -35,5 +42,4 @@ void Definition::render() {
 }
 
 void Definition::handle_keypress(int key) {
-    render();
 }

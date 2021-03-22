@@ -86,8 +86,8 @@ void Trie::prefix_search_recursive(Node* current, string& prefix, vector<string>
  * 
  * @return vector holding all words with Levenshtein distance of 'max_dif' or less from 'word'
  */
-priority_queue<isp> Trie::fuzzy_search(string word, int max_dif) {
-    priority_queue<isp> results;
+priority_queue<isp, vector<isp>, greater<isp>> Trie::fuzzy_search(string word, int max_dif) {
+    priority_queue<isp, vector<isp>, greater<isp>> results;
     vector<int> current_row(word.size() + 1);
     iota(begin(current_row), end(current_row), 0);  // Populate with 0, 1, ..., LEN_WORD
 
@@ -126,7 +126,7 @@ priority_queue<isp> Trie::fuzzy_search(string word, int max_dif) {
  * is valid for the word 'lawns', and the last row ('previous_row') contains all
  * necessary information.
  */
-void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_row, int max_dif, priority_queue<isp>& results) {
+void Trie::fuzzy_search_recursive(Node* n, string word, vector<int>& previous_row, int max_dif, priority_queue<isp, vector<isp>, greater<isp>>& results) {
     int columns = word.size();
     vector<int> current_row;  // Add one new row per letter
     current_row.push_back(previous_row[0] + 1);

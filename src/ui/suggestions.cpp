@@ -6,7 +6,7 @@ using namespace std;
 
 Suggestions::Suggestions() {
     choices = {"Test1", "Test2", "Test3", "Test4", "Test5"};
-    height = choices.size() + 2, width = 30, start_x = 0, start_y = 3, choice = -1;
+    height = 27, width = 30, start_x = 0, start_y = 3, choice = -1;
 
     w = newwin(height, width, start_y, start_x);
     keypad(w, TRUE);
@@ -25,6 +25,36 @@ void Suggestions::render() {
 
     werase(w);
     box(w, 0, 0);
+
+    choices.clear();  // Reset choices vector
+
+    // Show hint if there is no word
+    if (!search_term.size()) {
+        mvwprintw(w, y, x, "Suggestions...");
+        wrefresh(w);
+        return;
+    }
+
+    choices = d.t.prefix_search(search_term);
+    if (choices.size() > 20)
+        choices.resize(25);
+
+    // Use fuzzy search if there are no matching words
+    if (!choices.size()) {
+        pq = d.t.fuzzy_search(search_term, 4);
+
+        // Add words in priority queue to choices vector
+        while (!pq.empty() && choices.size() < 23) {
+            choices.push_back(pq.top().second);  // Add word to choices
+            pq.pop();                            // Remove word from priority queue
+        }
+
+        // Add 'DID YOU MEAN?' text if word does not exist
+        if (!d.t.search(search_term)) {
+            mvwprintw(w, y, x, "DID YOU MEAN?");
+            y += 2;
+        }
+    }
 
     for (int i = 0; i < choices.size(); i++) {
         if (choice == i) {  // Highlight the selected option
@@ -67,6 +97,4 @@ void Suggestions::handle_keypress(int key) {
             choice = -1;
             break;
     }
-
-    render();
 }

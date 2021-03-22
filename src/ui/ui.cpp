@@ -2,7 +2,6 @@
 
 using namespace std;
 
-string search_term = "example";
+string search_term = "";
 
 Dictionary d;
-priority_queue<isp, vector<isp>, greater<isp>> pq;

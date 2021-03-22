@@ -29,11 +29,10 @@ int main() {
     // cbreak();
 
     int key;
-    vector<Window*> windows = {new Suggestions, new Searchbar, new Definition};
-
-    for (Window* w : windows) w->render();  // Initial render
+    vector<Window*> windows = {new Searchbar, new Suggestions, new Definition};
 
     while (1) {
+        for (Window* w : windows) w->render();              // Render windows
         key = wgetch(windows[0]->w);                        // Get user input
         for (Window* w : windows) w->handle_keypress(key);  // Handle input
     }
