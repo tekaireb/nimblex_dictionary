@@ -23,7 +23,9 @@ void Suggestions::render() {
     int x = 2, y = 1;
 
     werase(w);
+    wattron(w, PAIR_CYAN);
     box(w, 0, 0);
+    wattroff(w, PAIR_CYAN);
 
     // Show hint if there is no word
     if (!search_term.size()) {

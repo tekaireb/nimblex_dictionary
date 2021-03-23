@@ -12,7 +12,10 @@ class Definition : public Window {
     int height,
         width,
         start_x,
-        start_y;
+        start_y,
+        pad_height,
+        pad_width;
+    std::vector<std::string> formatted_definition;
     WINDOW* w_padding;
 
    public:

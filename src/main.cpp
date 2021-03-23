@@ -26,7 +26,12 @@ int main() {
     initscr();
     clear();
     noecho();
-    // cbreak();
+
+    start_color();  // Start ncurses color
+
+    // Create color pairs
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 
     int key;
     vector<Window*> windows = {new Searchbar, new Suggestions, new Definition};

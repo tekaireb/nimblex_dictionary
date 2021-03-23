@@ -19,7 +19,7 @@ void Dictionary::load_from_file(string filename) {
     int num_positions = 0;  // Keeps track of number of positions found
     string word, def;
 
-    while (getline(f, line) && t.num_words < 100000) {  // Process each line of file
+    while (getline(f, line) && t.num_words < 500000) {  // Process each line of file
         pos = line.find("\"", 0);                       // Get position of first quote
         while (pos != string::npos) {
             if (line.at(pos - 1) != '\\')          // Ignore escaped quotes

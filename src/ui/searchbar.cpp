@@ -19,7 +19,9 @@ Searchbar::~Searchbar() {
 
 void Searchbar::render() {
     werase(w);
+    wattron(w, PAIR_CYAN);
     box(w, 0, 0);
+    wattroff(w, PAIR_CYAN);
 
     // Render text
     if (search_term.size())
