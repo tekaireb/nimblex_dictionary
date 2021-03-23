@@ -4,10 +4,10 @@ using namespace std;
 
 Definition::Definition() {
     height = 30, width = 90, start_x = 31, start_y = 0;
-
     pad_height = height - 2, pad_width = width - 4;
-
+    scroll_pos = 0;
     w = newwin(height, width, start_y, start_x);
+
     keypad(w, TRUE);
     box(w, 0, 0);  // Default characters for vertical/horizontal lines;
     wrefresh(w);   // Show
@@ -46,11 +46,11 @@ void Definition::render() {
         mvwprintw(w_padding, 12, (pad_width / 2 - (tagline.size() / 2)), "%s", tagline.c_str());
 
         // Print instructions
-        mvwprintw(w_padding, 15, 22, "Commands:");
-        mvwprintw(w_padding, 16, 27, "Up/Down:  navigate suggestions");
-        mvwprintw(w_padding, 17, 27, "Enter:    select highlighted suggestion");
-        mvwprintw(w_padding, 18, 27, "Tab:      select first suggestion");
-        mvwprintw(w_padding, 19, 27, "Esc:      clear input");
+        mvwprintw(w_padding, 15, 21, "Commands:");
+        mvwprintw(w_padding, 16, 26, "Up/Down:  navigate suggestions");
+        mvwprintw(w_padding, 17, 26, "Enter:    select highlighted suggestion");
+        mvwprintw(w_padding, 18, 26, "Tab:      select first suggestion");
+        mvwprintw(w_padding, 19, 26, "Esc:      clear input");
 
         // Credits
         string credit_text = "Created by Tyler Ekaireb";
@@ -70,14 +70,14 @@ void Definition::render() {
             mvwprintw(w, 0, ((width - 4) / 2 - (n->word.size() / 2)), "[%s]", n->word.c_str());
             wattroff(w, PAIR_YELLOW);
         }
+
         // Display definition
-
         formatted_definition.clear();
-
         int start = 0;
         int end = pad_width;
         string& raw_def = n->definition;
 
+        // Format line breaks
         while (end < raw_def.size()) {
             // Decrement from max width until space or hyphen is found
             while (raw_def.at(end) != ' ' && raw_def.at(end) != '-')
@@ -93,8 +93,12 @@ void Definition::render() {
         formatted_definition.push_back(raw_def.substr(start, raw_def.size() - start));  // Add last line
 
         // Print formatted definition line-by-line
-        for (int i = 0; i < formatted_definition.size(); i++)
-            mvwprintw(w_padding, i, 0, "%s", formatted_definition[i].c_str());
+        if (formatted_definition.size() <= pad_height)  // Entire definition fits in window
+            for (int i = 0; i < formatted_definition.size(); i++)
+                mvwprintw(w_padding, i, 0, "%s", formatted_definition[i].c_str());
+        else  // Definition is too long; only print section (determined by scroll position)
+            for (int i = scroll_pos; i < scroll_pos + pad_height; i++)
+                mvwprintw(w_padding, i - scroll_pos, 0, "%s", formatted_definition[i].c_str());
     }
 
     wrefresh(w);
@@ -102,4 +106,14 @@ void Definition::render() {
 }
 
 void Definition::handle_keypress(int key) {
+    switch (key) {
+        case KEY_UP:
+            if (scroll_pos > 0)
+                scroll_pos--;
+            break;
+        case KEY_DOWN:
+            if (scroll_pos + pad_height < formatted_definition.size())
+                scroll_pos++;
+            break;
+    }
 }

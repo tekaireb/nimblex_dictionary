@@ -14,7 +14,8 @@ class Definition : public Window {
         start_x,
         start_y,
         pad_height,
-        pad_width;
+        pad_width,
+        scroll_pos;
     std::vector<std::string> formatted_definition;
     WINDOW* w_padding;
 

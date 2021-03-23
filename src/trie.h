@@ -15,21 +15,32 @@
 #define min3(a, b, c) min(a, min(b, c))
 
 // Helper used to access Node's children
-#define child(c) children[c - ' ']
+// 0...25:  a-z
+// 26:      SPACE
+// 27:      -
+#define child(c) children[(isalpha(c) ? (tolower(c) - 'a') : (c == ' ' ? 26 : 27))]
+
+// Number of children in each node
+#define NUM_CHILDREN 29
 
 // Define int-string pair
 typedef std::pair<int, std::string> isp;
 
 // Nodes within the Trie
 struct Node {
-    char letter;             // Letter stored in node
-    bool end_of_word;        // Whether or not node is final character of word
-    Node* children[97];      // Pointers to children
-    std::string word;        // Word (last char)
-    std::string definition;  // Definition of word (last char)
+    char letter;                   // Letter stored in node
+    bool end_of_word;              // Whether or not node is final character of word
+    Node* children[NUM_CHILDREN];  // Pointers to children
+    std::string word;              // Word (last char)
+    std::string definition;        // Definition of word (last char)
 
     Node() : end_of_word(false), letter('\0') {
-        std::fill_n(children, 97, nullptr);  // Clear children
+        std::fill_n(children, NUM_CHILDREN, nullptr);  // Clear children
+    }
+
+    ~Node() {
+        for (int i = 0; i < NUM_CHILDREN; i++)
+            delete children[i];
     }
 };
 
@@ -40,6 +51,7 @@ class Trie {
     int num_words;  // Number of words stored in the Trie
 
     Trie();
+    ~Trie() { delete root; }
     void insert(std::string word, std::string def);
     Node* search(std::string word);
     std::vector<std::string> prefix_search(std::string word);

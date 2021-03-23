@@ -19,7 +19,7 @@ void Trie::insert(string word, string def) {
     for (char c : word) {
         if (!current->child(c)) {
             current->child(c) = new Node;
-            current->child(c)->letter = c;
+            current->child(c)->letter = tolower(c);
         }
         current = current->child(c);
     }

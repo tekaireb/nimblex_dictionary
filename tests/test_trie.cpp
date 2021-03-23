@@ -65,7 +65,7 @@ void test_fuzzy_search() {
 
     Trie t;
 
-    t.insert("example", "");
+    t.insert("example", "");   // Distance = 0 (ignore)
     t.insert("examplea", "");  // Distance = 1
     t.insert("efample", "");   // Distance = 1
     t.insert("eeample", "");   // Distance = 1
@@ -73,8 +73,8 @@ void test_fuzzy_search() {
     t.insert("ffample", "");   // Distance = 2
     t.insert("fffmple", "");   // Distance = 3
 
-    test((int)t.fuzzy_search("example", 0).size(), 1, "Test fuzzy search function 1", 4);
-    test((int)t.fuzzy_search("example", 1).size(), 4, "Test fuzzy search function 2", 4);
-    test((int)t.fuzzy_search("example", 2).size(), 6, "Test fuzzy search function 3", 4);
-    test((int)t.fuzzy_search("example", 3).size(), 7, "Test fuzzy search function 4", 4);
+    test((int)t.fuzzy_search("example", 0).size(), 0, "Test fuzzy search function 1", 4);
+    test((int)t.fuzzy_search("example", 1).size(), 3, "Test fuzzy search function 2", 4);
+    test((int)t.fuzzy_search("example", 2).size(), 5, "Test fuzzy search function 3", 4);
+    test((int)t.fuzzy_search("example", 3).size(), 6, "Test fuzzy search function 4", 4);
 }
