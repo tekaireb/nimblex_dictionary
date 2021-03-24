@@ -47,7 +47,7 @@ void Definition::render() {
 
         // Print instructions
         mvwprintw(w_padding, 15, 21, "Commands:");
-        mvwprintw(w_padding, 16, 26, "Up/Down:  navigate suggestions");
+        mvwprintw(w_padding, 16, 26, "Up/Down:  navigate suggestions and scroll");
         mvwprintw(w_padding, 17, 26, "Enter:    select highlighted suggestion");
         mvwprintw(w_padding, 18, 26, "Tab:      select first suggestion");
         mvwprintw(w_padding, 19, 26, "Esc:      clear input");
