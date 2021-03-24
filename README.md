@@ -4,11 +4,15 @@
 ## Overview
 Nimblex (_nimble lexicon_) is a dictionary built in C++ using the [ncurses](https://invisible-island.net/ncurses/ncurses.html) library for graphics.
 
+![Nimblex dictionary overview clip](https://github.com/tekaireb/nimblex_dictionary/raw/main/screenshots/overview_clip.gif)
+
 ### Blazing fast
 Nimblex uses the [trie](https://en.wikipedia.org/wiki/Trie) data structure (prefix tree) in order to search large datasets incredibly fast. Suggestions appear instantaneously as the user types.
 
 ### Smart
 Nimblex provides both autocomplete and fuzzy search. As the user types, autocomplete suggestions appear below the searchbar. If there is no exact match, Nimblex will suggest similar words based on [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance). Using [dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming), computation is reused as the dataset is traversed recursively, delivering quick performance. 
+
+![Nimblex dictionary fuzzy clip (levenshtein distance suggestion)](https://github.com/tekaireb/nimblex_dictionary/raw/main/screenshots/fuzzy_clip.gif)
 
 ## Usage
 Simply clone the repository and run:
